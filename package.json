@@ -1,0 +1,52 @@
+{
+	"name": "img-io",
+	"version": "0.2.0",
+	"description": "A utility for selecting, processing, and converting images to JPEG format. Input a image file (including .heic), output blob, jpg and base64.",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"prepublishOnly": "npm run build",
+		"test": "jest",
+		"lint": "eslint src/**/*.ts"
+	},
+	"keywords": [
+		"image",
+		"conversion",
+		"jpeg",
+		"heic",
+		"webp",
+		"selector"
+	],
+	"author": "@vinciarts",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vinciarts/img-io.git"
+	},
+	"bugs": {
+		"url": "https://github.com/vinciarts/img-io/issues"
+	},
+	"homepage": "https://github.com/vinciarts/img-io#readme",
+	"dependencies": {
+		"browser-image-compression": "^2.0.0",
+		"heic2any": "^0.0.4"
+	},
+	"devDependencies": {
+		"@types/jest": "^27.0.0",
+		"@typescript-eslint/eslint-plugin": "^4.0.0",
+		"@typescript-eslint/parser": "^4.0.0",
+		"eslint": "^7.0.0",
+		"jest": "^27.0.0",
+		"ts-jest": "^27.0.0",
+		"typescript": "^4.0.0"
+	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"engines": {
+		"node": ">=12.0.0"
+	}
+}
