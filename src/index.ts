@@ -1,9 +1,10 @@
-import { imgToJPG } from "./imgToJPG";
+import { imgToJPG, CompressionOptions } from "./imgToJPG";
+
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/heic", "image/heif", "image/tiff"];
 
 interface ImgSelectorOptions {
-  acceptedTypes: string[];
-  maxSize: number;
   timeout: number;
+  compressionOptions?: Partial<CompressionOptions>;
 }
 
 interface ImgSelectorOutput {
@@ -15,26 +16,24 @@ interface ImgSelectorOutput {
 class ImgIO {
   private options: ImgSelectorOptions;
   public isProcessing: boolean = false;
-  public errMsg: string = "";
+  public errorMessage: string = "";
   public output: ImgSelectorOutput = { jpg: null, url: null, base64: null };
 
   constructor(options: Partial<ImgSelectorOptions> = {}) {
     this.options = {
-      acceptedTypes: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/heic", "image/heif", "image/tiff"],
-      maxSize: 5 * 1024 * 1024, // 默认5MB
-      timeout: 8000, // 默认8秒
+      timeout: 8000, // Default 8 seconds
       ...options,
     };
   }
 
   async select(file: File): Promise<void> {
     this.isProcessing = true;
-    this.errMsg = "";
+    this.errorMessage = "";
     this.clear();
 
     try {
       if (!this.validateFile(file)) {
-        throw new Error("Invalid file type or size");
+        throw new Error("Unsupported file type");
       }
 
       const result = await this.processFile(file);
@@ -43,11 +42,11 @@ class ImgIO {
       this.output.base64 = await this.fileToBase64(result.jpg);
     } catch (error) {
       if (error instanceof Error) {
-        this.errMsg = error.message;
+        this.errorMessage = error.message;
         console.error("Error processing file:", error.message);
       } else {
-        this.errMsg = "An unknown error occurred";
-        console.error("Unknown error processing file:", error);
+        this.errorMessage = "An unknown error occurred";
+        console.error("An unknown error occurred while processing file:", error);
       }
     } finally {
       this.isProcessing = false;
@@ -56,11 +55,11 @@ class ImgIO {
 
   clear(): void {
     this.output = { jpg: null, url: null, base64: null };
-    this.errMsg = "";
+    this.errorMessage = "";
   }
 
   private validateFile(file: File): boolean {
-    return this.options.acceptedTypes.includes(file.type) && file.size <= this.options.maxSize;
+    return ACCEPTED_TYPES.includes(file.type);
   }
 
   private async processFile(file: File): Promise<{ jpg: File; previewUrl: string }> {
