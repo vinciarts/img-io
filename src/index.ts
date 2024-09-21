@@ -85,4 +85,4 @@ class ImgIO {
   }
 }
 
-export { ImgIO };
+export default { ImgIO };
