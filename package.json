@@ -1,6 +1,6 @@
 {
   "name": "img-io",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A utility for selecting, processing, and converting images to JPEG format. Input a image file (including .heic), output blob, jpg and base64.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -3,7 +3,7 @@ import { imgToJPG, CompressionOptions } from "./imgToJPG";
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/heic", "image/heif", "image/tiff"];
 
 interface ImgSelectorOptions {
-  timeout: number;
+  timeout?: number;
   compressionOptions?: Partial<CompressionOptions>;
 }
 
@@ -21,8 +21,8 @@ class ImgIO {
 
   constructor(options: Partial<ImgSelectorOptions> = {}) {
     this.options = {
-      timeout: 8000, // Default 8 seconds
-      ...options,
+      timeout: options.timeout ?? 8000,
+      compressionOptions: options.compressionOptions ?? {},
     };
   }
 
@@ -67,7 +67,7 @@ class ImgIO {
       setTimeout(() => reject(new Error("Processing timeout")), this.options.timeout)
     );
 
-    const processPromise = imgToJPG(file);
+    const processPromise = imgToJPG(file, this.options.compressionOptions);
 
     return await Promise.race([processPromise, timeoutPromise]);
   }
@@ -76,7 +76,7 @@ class ImgIO {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = (reader.result as string).split(",")[1]; // 只保留base64部分
+        const base64String = (reader.result as string).split(",")[1];
         resolve(base64String);
       };
       reader.onerror = reject;
@@ -85,4 +85,4 @@ class ImgIO {
   }
 }
 
-export default { ImgIO };
+export { ImgIO };
